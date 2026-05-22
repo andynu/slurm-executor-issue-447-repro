@@ -1,0 +1,24 @@
+# Variant faithful to the original #447 report's rule shape: TWO wildcards and an
+# output that lives in a per-combination SUBDIRECTORY (the reporter's
+# `output: "finished/{sample}_{N}/test.vcf"`). Run with `./run.sh --dirs`.
+#
+# (The reporter's `input: "{sample}.bam"` is omitted as non-essential — the bug
+# does not depend on inputs.)
+#
+# Optional failure trigger (./run.sh --dirs --trigger): see the note in Snakefile.
+
+JOBS = [("s1", "1"), ("s2", "1"), ("s3", "2"), ("s4", "2"), ("s5", "3")]
+
+
+rule all:
+    input:
+        [f"finished/{sample}_{n}/test.txt" for sample, n in JOBS],
+
+
+rule ruleA:
+    output:
+        "finished/{sample}_{N}/test.txt",
+    shell:
+        'if [ "$SLURM_ARRAY_TASK_ID" = "$SLURM_ARRAY_TASK_MIN" ]; then '
+        'sleep "${{FIRST_SLEEP:-0}}"; fi; '
+        'echo {wildcards.sample} {wildcards.N} > {output}'
