@@ -1,0 +1,9 @@
+# Minimal SLURM workflow profile. Edit slurm_partition / slurm_account for your cluster.
+default-resources:
+    slurm_partition: "u20"
+    slurm_account: wibrusers
+    mem_mb: 200
+    runtime: 5
+    tasks: 1
+    cpus_per_task: 1
+jobs: 5
